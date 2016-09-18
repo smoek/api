@@ -1,0 +1,125 @@
+#%RAML 1.0
+title: SMØK API Spec
+version: v0
+baseUri: https://letssmoek.io/
+documentation:
+  - title: Introduction
+    content: !include documentation/introduction.md
+  - title: TODO
+    content: !include documentation/todo.md
+types:
+  UUID:
+    type: string
+    pattern: '[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}'
+
+  ErrorType:
+    type: object
+    properties:
+      id:
+        type: string
+        pattern: '[\w_]+\.([\w_]+\.)+[\w_]+'
+        example: error.group.invalid
+        description: |
+          Machine-friendly error identifier. It should lead with error,
+          dot-separated resources according to hierarchy, and a unique name for
+          the message
+      message:
+        type: string
+        example: No group with this ID exists.
+        description: |
+          A human-readable English text describing the error situation.
+
+  SmokStatusType:
+    type: object
+    properties:
+      requested:
+        type: boolean
+        description: |
+          True once SMØK has been requested. Further attempts to trigger SMØK
+          must increase the support of it.
+      confirmed:
+        type: boolean
+        description: |
+          True for a certain time after a quorum has been reached.
+      supporters:
+        type: array
+        items: SessionType
+        description: |
+          The current supporters of a requested SMØK.
+
+  SessionType:
+    type: object
+    properties:
+      id: UUID
+      name: string
+
+  GroupType:
+    type: object
+    properties:
+      id: UUID
+      identities: SessionType
+      status?: SmokStatusType
+
+/group:
+  post:
+    description: |
+      Creates a new group.
+    responses:
+      200:
+        body:
+          application/json:
+            type: GroupType
+  /{groupId}/session:
+    uriParameters:
+      groupId:
+        type: integer
+        description: |
+          ID of the group to open up a session with.
+    get:
+      description: |
+        Request a group's current progress towards SMØK.
+
+        In an imperfect world, this may be used to check the SMØK status of the
+        group. In reality, push-based principles should be used.
+      responses:
+        200:
+          body:
+            application/json:
+              type: GroupType
+    post:
+      description: |
+        Creates a new session in the group, thereby creating a new session that
+        lives as long as one is part of the group/active in the group.
+      responses:
+        200:
+          body:
+            application/json:
+              type: SessionType
+        404:
+          body:
+            application/json:
+              type: ErrorType
+              example: |
+                {
+                  "id": "error.group.not_found",
+                  "message": "This group does not exists."
+                }
+    /{sessionId}:
+      uriParameters:
+        sessionId:
+          type: integer
+          description: |
+            ID of the session that was opened up by posting to a group's session
+            entity.
+      delete:
+        description: |
+          Terminates an ongoing session with a group permanently. The session is
+          lost and rejoining the group is necessary again in the future.
+
+          Clients should work around this inconvenience for now, as
+          participation in a group is considered highly transient.
+      /smoek:
+        post:
+          description: |
+            Request SMØK as the given session in the group, or support an
+            ongoing effort for SMØK.
