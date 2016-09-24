@@ -1,7 +1,13 @@
 language: node_js
-node_js: "6.1"
+node_js: '6.1'
 before_script:
-  - "npm install -g raml2html@4.0.0-beta1" # RAML 1.0 support requires at least raml2html 4
+- npm install -g raml2html@4.0.0-beta1
 script:
-  - "raml2html --version"
-  - "raml2html api.raml > api.html"
+- raml2html api.raml > api.html
+deploy:
+  provider: releases
+  api_key:
+    secure: t8EMwD+k/ygZX4R/deH+B+YCpTqy9Jg1cO4+tRWn4809DxuJyDszW+IT4XBL2Zo1XpWN7i/o1WdlZFcy+Yjd0ZJEgBkcJ0EwWYkuUoF9PKxL1gdCXu6pTsIS6VpG4soWdM5yUE9mH/DLtyL888JdV6wPaEXMTXv45OT0o10O70UVbbJRfZ07thza+sU1HZhb0nFk9sdSsg2nTFy4eS4s86mo+076ZS8EtXid34gTUO7re2hPXuJ5Jt9CFSsMNxX7moQLcgbpTVCOr6E5or3tUix7qC4cdkpsCLl96o4TASLsVDgAfwX8w1RxFhlM0V0af9Y0snimTb1ygfe9EOtwJmvNQg2N7OdWQFAKgaB9AVuGBHFJQFAaXCE53Jou2nHLXINMLaAaQACMqjdlWpC7ap9Td8zR5IL5ce+lOh2LEkNmzd8/83mG/yUJbScDh8EpRAEAqYc7+wb9Sgle6l3VmlhStVjBgnLBZuEZP3Ho2EyQ9Rq6dKIGwfZvmHyqjtalngAglReSNBVsdTxgvaVMbgxjJMjl2zcKzSwdiWz3zwUO8jzSwOntkkoWN+TQMknd7Gs79ioHk/H37FL+5m+Yz6Vbb+Od+yHZb+uZeLt6KvxvDryYNQgRkt0FedB7rNQJ5bVgDGnSh94kybcBZ67BZCfrgX27V0swgh/OiaZ4tBg=
+  file: api.html
+  on:
+    repo: smoek/api
