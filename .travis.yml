@@ -1,4 +1,4 @@
 language: node_js
-node_js: "6.1.x"
+node_js: "6.1"
 before_script: npm install raml2html@>=4 # RAML 1.0 support requires at least raml2html 4
 script: raml2html api.raml > api.html
