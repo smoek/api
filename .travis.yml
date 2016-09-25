@@ -4,12 +4,7 @@ before_script:
 - npm install -g raml2html@4.0.0-beta1
 script:
 - raml2html api.raml > api.html
-deploy:
-  provider: releases
-  api_key:
-    secure: vc2dFSqZE1lMJqpo4l2LUNkGKd7GWtkIZSJo60novm2qog/BF1k+U7THLTIeQV37G8zZ/mpU7g8/SiOQwcTQD0p0IihcrqQvUsPzMqZ3aQOKv7oG6YXG3hLma287M1r1jEqyjqvw+ODpaiRH2BNRVg2k6GQEXT8/df3iA4MkDsK2R5Rk0TaENegAqklkrBG+tXNejvOWwfmtolSH/Bfymlu9r+oj08hmnhTIlAeE84U+64QaTaQCnQ0IqtlwWPsuRKUqrUQqnhUvnEAWSAjzM/Y7bS+4DjfNTXbI44aFi7yT+omFWOqFmoUrBQljtyE8dr1ppPa/IIEd73p8s+1D9OeVkfKiCzZp7irI0ImOvYyp2lyhU93XNJH9/CjLURPmMijQYAWhABlxr8A9hZdSVdBxZxX6BjqViUejPkAvWMXzy9gw9gQx9W6JSLfaxjWK0JosYKTua/0J2BwUMxTH6Gj5Oa/NTPIOAixjpboK2UurECJ1jt79LWatF1NTy8Kfile+Z/O5sCMHB+rb2Bb3ff96hSU8dr/xKfl3chklnwhUDAef6zudADRswsPR67alfTYBEzX2yYwzsUTSmNaQt5BmhUeCyqafIsdcpgr/cOKtKGVgBBrt0zph1p3Fvu7djvqhxCuozxH5G7ug7RzFKDvVFRXjaC/4iQKOEL5eG8M=
-  skip_cleanup: true
-  file: api.html
-  on:
-    repo: smoek/api
-    branch: build_documentation_in_travis
+after_success:
+- apt-get install sshpass
+- ssh-keyscan $DEPLOY_HOST >>~/.ssh/known_hosts
+- sshpass -p"$DEPLOY_PASSWORD" scp api.html $DEPLOY_USER@$DEPLOY_HOST:/var/www/smok/docs/api.html
