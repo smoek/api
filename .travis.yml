@@ -1,0 +1,10 @@
+language: node_js
+node_js: '6.1'
+before_script:
+- npm install -g raml2html@4.0.0-beta1
+script:
+- raml2html api.raml > api.html
+after_success:
+- apt-get install sshpass
+- ssh-keyscan $DEPLOY_HOST >>~/.ssh/known_hosts
+- sshpass -p"$DEPLOY_PASSWORD" scp api.html $DEPLOY_USER@$DEPLOY_HOST:/var/www/smok/docs/api.html

@@ -1,0 +1,5 @@
+# IDE configs
+.idea/*
+
+# Generated API docs
+api.html
