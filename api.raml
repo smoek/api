@@ -29,7 +29,7 @@ types:
         description: |
           A human-readable English text describing the error situation.
 
-  SmokStatusType:
+  SmoekStatusType:
     type: object
     properties:
       requested:
@@ -66,7 +66,7 @@ types:
       sessions:
         type: array
         items: SessionType
-      status?: SmokStatusType
+      status?: SmoekStatusType
 
 /group:
   get:
