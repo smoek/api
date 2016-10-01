@@ -40,12 +40,17 @@ types:
       confirmed:
         type: boolean
         description: |
-          True for a certain time after a quorum has been reached.
+          True for a certain time after a quorum has been achieved.
       supporters:
         type: array
         items: SessionType
         description: |
           The current supporters of a requested SMØK.
+      expiresAt:
+        type: datetime
+        description: |
+          The date and time when the SMØK will expire if no quorum has been
+          achieved.
 
   SessionType:
     type: object
@@ -57,10 +62,22 @@ types:
     type: object
     properties:
       id: UUID
-      identities: SessionType
+      name: string
+      sessions:
+        type: array
+        items: SessionType
       status?: SmokStatusType
 
 /group:
+  get:
+    description: |
+      List the existing groups.
+    responses:
+      200:
+        body:
+          application/json:
+            type: array
+            items: GroupType
   post:
     description: |
       Creates a new group.
@@ -69,7 +86,19 @@ types:
         body:
           application/json:
             type: GroupType
-  /{groupId}/session:
+      409:
+        description: |
+          When a group with this name already exists.
+        body:
+          application/json:
+            type: ErrorType
+            example: |
+              {
+                "id": "error.group.already_exists",
+                "message": "A group with name 'Smøk-Club' already exists."
+              }
+
+  /{groupId}:
     uriParameters:
       groupId:
         type: integer
@@ -81,20 +110,13 @@ types:
 
         In an imperfect world, this may be used to check the SMØK status of the
         group. In reality, push-based principles should be used.
+
+        Inactive sessions may expire after nine hours.
       responses:
         200:
           body:
             application/json:
               type: GroupType
-    post:
-      description: |
-        Creates a new session in the group, thereby creating a new session that
-        lives as long as one is part of the group/active in the group.
-      responses:
-        200:
-          body:
-            application/json:
-              type: SessionType
         404:
           body:
             application/json:
@@ -102,24 +124,82 @@ types:
               example: |
                 {
                   "id": "error.group.not_found",
-                  "message": "This group does not exists."
-                }
-    /{sessionId}:
-      uriParameters:
-        sessionId:
-          type: integer
-          description: |
-            ID of the session that was opened up by posting to a group's session
-            entity.
-      delete:
-        description: |
-          Terminates an ongoing session with a group permanently. The session is
-          lost and rejoining the group is necessary again in the future.
+                  "message": "This group does not exist."
+                }              
 
-          Clients should work around this inconvenience for now, as
-          participation in a group is considered highly transient.
-      /smoek:
-        post:
+    /session:
+      post:
+        description: |
+          Creates a new session in the group, thereby creating a new session that
+          lives as long as one is part of the group/active in the group.
+
+          The session may expire after nine hours.
+        responses:
+          200:
+            body:
+              application/json:
+                type: SessionType
+          404:
+            body:
+              application/json:
+                type: ErrorType
+                example: |
+                  {
+                    "id": "error.group.not_found",
+                    "message": "This group does not exist."
+                  }
+
+      /{sessionId}:
+        uriParameters:
+          sessionId:
+            type: integer
+            description: |
+              ID of the session that was opened up by posting to a group's session
+              entity.
+        delete:
           description: |
-            Request SMØK as the given session in the group, or support an
-            ongoing effort for SMØK.
+            Terminates an ongoing session with a group permanently. The session is
+            lost and rejoining the group is necessary again in the future.
+
+            Clients should work around this inconvenience for now, as
+            participation in a group is considered highly transient.
+          responses:
+            201:
+              description: |
+                When the session was successfully deleted.
+            404:
+              description: |
+                When then session ID does not exists.
+              body:
+                application/json:
+                  type: ErrorType
+                  example: |
+                    {
+                      "id": "error.sessions.not_found",
+                      "message": "This session does not exist."
+                    }
+
+        /smoek:
+          post:
+            description: |
+              Request SMØK as the given session in the group, or support an
+              ongoing effort for SMØK.
+          delete:
+            description: |
+              Withdraw your SMØK request or support. If there are other SMØK
+              supporters the SMØK request will not be cancelled.
+            responses:
+              201:
+                description: |
+                  When your SMØK request was successfully cancelled.
+              404:
+                description: |
+                  When then session ID does not exists.
+                body:
+                  application/json:
+                    type: ErrorType
+                    example: |
+                      {
+                        "id": "error.session.not_found",
+                        "message": "This session does not exist."
+                      }
