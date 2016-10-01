@@ -1,7 +1,7 @@
 language: node_js
 node_js: '6.1'
 before_script:
-- npm install -g raml2html@4.0.0-beta1
+- npm install -g raml2html@4.0.0-beta5
 script:
 - raml2html api.raml > api.html
 after_success:
