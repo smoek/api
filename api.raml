@@ -82,7 +82,9 @@ types:
     description: |
       Creates a new group.
     responses:
-      200:
+      201:
+        description: |
+          When the group was successfully created.
         body:
           application/json:
             type: GroupType
@@ -135,7 +137,9 @@ types:
 
           The session may expire after nine hours.
         responses:
-          200:
+          201:
+            description: |
+              When the session was successfully created.
             body:
               application/json:
                 type: SessionType
@@ -164,7 +168,7 @@ types:
             Clients should work around this inconvenience for now, as
             participation in a group is considered highly transient.
           responses:
-            201:
+            200:
               description: |
                 When the session was successfully deleted.
             404:
@@ -189,7 +193,7 @@ types:
               Withdraw your SMØK request or support. If there are other SMØK
               supporters the SMØK request will not be cancelled.
             responses:
-              201:
+              200:
                 description: |
                   When your SMØK request was successfully cancelled.
               404:
