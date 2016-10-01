@@ -3,3 +3,6 @@
 
 # Generated API docs
 api.html
+
+# Logs
+npm-debug.log
