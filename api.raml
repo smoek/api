@@ -140,6 +140,19 @@ types:
           404:
             description: |
               When no group with the given UUID exists.
+         409:
+            description: |
+              When a session with that name already exists in that group.
+
+              Note that two sessions in different groups may use the same name.
+            body:
+              application/json:
+                type: ErrorType
+                example: |
+                  {
+                    "id": "error.session.already_exists",
+                    "message": "A session named '<name>' already exists in group '<uuid>'."
+                  }
 
       /{sessionId}:
         uriParameters:
