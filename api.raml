@@ -120,14 +120,8 @@ types:
             application/json:
               type: GroupType
         404:
-          body:
-            application/json:
-              type: ErrorType
-              example: |
-                {
-                  "id": "error.group.not_found",
-                  "message": "This group does not exist."
-                }              
+          description: |
+            When no group with the given UUID exists.
 
     /session:
       post:
@@ -144,14 +138,8 @@ types:
               application/json:
                 type: SessionType
           404:
-            body:
-              application/json:
-                type: ErrorType
-                example: |
-                  {
-                    "id": "error.group.not_found",
-                    "message": "This group does not exist."
-                  }
+            description: |
+              When no group with the given UUID exists.
 
       /{sessionId}:
         uriParameters:
@@ -173,15 +161,7 @@ types:
                 When the session was successfully deleted.
             404:
               description: |
-                When then session ID does not exists.
-              body:
-                application/json:
-                  type: ErrorType
-                  example: |
-                    {
-                      "id": "error.sessions.not_found",
-                      "message": "This session does not exist."
-                    }
+                When no group or session with the given UUID exist.
 
         /smoek:
           post:
@@ -198,12 +178,4 @@ types:
                   When your SMØK request was successfully cancelled.
               404:
                 description: |
-                  When then session ID does not exists.
-                body:
-                  application/json:
-                    type: ErrorType
-                    example: |
-                      {
-                        "id": "error.session.not_found",
-                        "message": "This session does not exist."
-                      }
+                  When no group or session with the given UUID exist.
