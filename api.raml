@@ -181,6 +181,14 @@ types:
             description: |
               Request SMØK as the given session in the group, or support an
               ongoing effort for SMØK.
+            responses:
+              200:
+                description: |
+                  When the SMØK request was successfully submitted.
+              body:
+                application/json:
+                  type: SmoekStatusType
+
           delete:
             description: |
               Withdraw your SMØK request or support. If there are other SMØK
@@ -189,6 +197,9 @@ types:
               200:
                 description: |
                   When your SMØK request was successfully cancelled.
+                body:
+                  application/json:
+                    type: SmoekStatusType
               404:
                 description: |
                   When no group or session with the given UUID exist.
