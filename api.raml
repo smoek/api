@@ -203,3 +203,14 @@ types:
               404:
                 description: |
                   When no group or session with the given UUID exist.
+              409:
+                description: |
+                  When the SMØK vote has already been confirmed.
+                body:
+                  application/json:
+                    type: ErrorType
+                    example: |
+                      {
+                        "id": "error.smoek.smoek_confirmed",
+                        "message": "SMØK vote has already been confirmed."
+                      }
